@@ -1,0 +1,56 @@
+Timestamp: 2023-02-21 13:01:55 - 2023-02-21 13:06:26 
+
+1. Port forward Grafana and open Dashboard
+2. Start simulating Load
+hey -c 100 -z 5m http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/
+3. Trigger Deployment with new image version
+helm upgrade -i frontend flagger/app/10-frontend -n car-rental
+4. 30s * 5 steps = 2.5 min for full promotion if succeeds
+5. Capture Timeframe and Image of Grafana Dashboard
+http://localhost:57611/d/0ekNr_14k/flagger?orgId=1&from=1676980915000&to=1676981186000
+
+
+hey -c 100 -z 5m http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/
+
+Summary:
+  Total:	300.3673 secs
+  Slowest:	0.7888 secs
+  Fastest:	0.0329 secs
+  Average:	0.0691 secs
+  Requests/sec:	1444.4816
+
+  Total data:	5359657875 bytes
+  Size/request:	12353 bytes
+
+Response time histogram:
+  0.033 [1]	|
+  0.108 [413964]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  0.184 [15998]	|■■
+  0.260 [1011]	|
+  0.335 [880]	|
+  0.411 [1316]	|
+  0.486 [615]	|
+  0.562 [78]	|
+  0.638 [7]	|
+  0.713 [3]	|
+  0.789 [2]	|
+
+
+Latency distribution:
+  10% in 0.0590 secs
+  25% in 0.0614 secs
+  50% in 0.0633 secs
+  75% in 0.0658 secs
+  90% in 0.0784 secs
+  95% in 0.1046 secs
+  99% in 0.1686 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0000 secs, 0.0329 secs, 0.7888 secs
+  DNS-lookup:	0.0000 secs, 0.0000 secs, 0.0436 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.1343 secs
+  resp wait:	0.0653 secs, 0.0326 secs, 0.6895 secs
+  resp read:	0.0038 secs, 0.0000 secs, 0.6519 secs
+
+Status code distribution:
+  [200]	433875 responses

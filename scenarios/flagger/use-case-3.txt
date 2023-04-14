@@ -1,0 +1,264 @@
+Timestamp: 21.02.2023 15:18:00 - 21.02.2023 15:23:00
+
+1. Port forward Grafana and open Dashboard
+2. Start simulating Load
+hey -c 100 -z 10m -m POST -T "application/json" -d '{"car_id":"0","location_of_rental_id":2,"location_of_return_id":2,"date_of_booking":"2023-02-20","date_of_rental":"2023-02-20","date_of_return":"2023-02-27","method_of_payment":"AMERICAN_EXPRESS","card_number":"4242424242424242","card_security_code":"424","valid_until":"2024-04-01","first_name":"Max","last_name":"Mustermann","email":"m.mustermann@mm.at","order_status":"CREATED"}' "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/location" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/car?currencySymbol=NZD" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency" &
+
+3. Trigger Deployment with new image version
+
+helm upgrade -i currency-service flagger/app/03-currency-service -n car-rental
+helm upgrade -i car-service flagger/app/04-car-service -n car-rental
+helm upgrade -i location-service flagger/app/05-location-service -n car-rental
+helm upgrade -i order-service flagger/app/07-order-service -n car-rental
+
+4. 30s * 5 steps = 2.5 min for full promotion if succeeds
+
+5. Capture Timeframe and Image of Grafana Dashboard
+http://localhost:56340/d/0ekNr_14k/flagger?orgId=1&from=1676988951000&to=1676989391000
+
+
+Summary:
+  Total:	600.1786 secs
+  Slowest:	4.0881 secs
+  Fastest:	0.0388 secs
+  Average:	0.5151 secs
+  Requests/sec:	194.1039
+
+
+Response time histogram:
+  0.039 [1]	|
+  0.444 [58047]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  0.849 [45346]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  1.254 [9330]	|■■■■■■
+  1.659 [2502]	|■■
+  2.063 [889]	|■
+  2.468 [218]	|
+  2.873 [96]	|
+  3.278 [36]	|
+  3.683 [22]	|
+  4.088 [10]	|
+
+
+Latency distribution:
+  10% in 0.2187 secs
+  25% in 0.3100 secs
+  50% in 0.4447 secs
+  75% in 0.6320 secs
+  90% in 0.8819 secs
+  95% in 1.0983 secs
+  99% in 1.6874 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0001 secs, 0.0388 secs, 4.0881 secs
+  DNS-lookup:	0.0000 secs, 0.0000 secs, 0.0594 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0041 secs
+  resp wait:	0.5030 secs, 0.0386 secs, 4.0693 secs
+  resp read:	0.0119 secs, 0.0000 secs, 1.6256 secs
+
+Status code distribution:
+  [200]	116378 responses
+  [204]	119 responses
+
+
+
+
+[2]    51888 done       hey -c 100 -z 10m
+
+Summary:
+  Total:	600.8758 secs
+  Slowest:	19.8189 secs
+  Fastest:	0.0595 secs
+  Average:	1.9111 secs
+  Requests/sec:	50.7143
+
+
+Response time histogram:
+  0.059 [1]	|
+  2.035 [22249]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  4.011 [4295]	|■■■■■■■■
+  5.987 [1945]	|■■■
+  7.963 [1168]	|■■
+  9.939 [499]	|■
+  11.915 [127]	|
+  13.891 [56]	|
+  15.867 [18]	|
+  17.843 [8]	|
+  19.819 [5]	|
+
+
+Latency distribution:
+  10% in 0.5205 secs
+  25% in 0.7403 secs
+  50% in 1.1129 secs
+  75% in 2.1724 secs
+  90% in 4.8107 secs
+  95% in 6.4615 secs
+  99% in 9.4667 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0005 secs, 0.0595 secs, 19.8189 secs
+  DNS-lookup:	0.0002 secs, 0.0000 secs, 0.0519 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0134 secs
+  resp wait:	1.8850 secs, 0.0589 secs, 19.8048 secs
+  resp read:	0.0250 secs, 0.0000 secs, 2.1499 secs
+
+Status code distribution:
+  [200]	30371 responses
+
+Error distribution:
+  [97]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+  [1]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": read tcp 192.168.178.41:62044->20.103.187.60:80: read: connection reset by peer
+  [1]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": read tcp 192.168.178.41:62052->20.103.187.60:80: read: connection reset by peer
+  [1]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": read tcp 192.168.178.41:62061->20.103.187.60:80: read: connection reset by peer
+  [1]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": read tcp 192.168.178.41:62077->20.103.187.60:80: read: connection reset by peer
+  [1]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": read tcp 192.168.178.41:62079->20.103.187.60:80: read: connection reset by peer
+
+
+[4]  + 51890 done       hey -c 100 -z 10m
+
+Summary:
+  Total:	602.0578 secs
+  Slowest:	17.8478 secs
+  Fastest:	0.0673 secs
+  Average:	1.1757 secs
+  Requests/sec:	84.8673
+
+
+Response time histogram:
+  0.067 [1]	|
+  1.845 [45478]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  3.623 [4325]	|■■■■
+  5.401 [750]	|■
+  7.180 [195]	|
+  8.958 [103]	|
+  10.736 [106]	|
+  12.514 [105]	|
+  14.292 [24]	|
+  16.070 [0]	|
+  17.848 [8]	|
+
+
+Latency distribution:
+  10% in 0.4856 secs
+  25% in 0.6590 secs
+  50% in 0.9344 secs
+  75% in 1.3421 secs
+  90% in 1.9077 secs
+  95% in 2.5326 secs
+  99% in 5.5608 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0002 secs, 0.0673 secs, 17.8478 secs
+  DNS-lookup:	0.0001 secs, 0.0000 secs, 0.0526 secs
+  req write:	0.0001 secs, 0.0000 secs, 0.0034 secs
+  resp wait:	1.1578 secs, 0.0672 secs, 17.8476 secs
+  resp read:	0.0175 secs, 0.0000 secs, 1.0276 secs
+
+Status code distribution:
+  [201]	48360 responses
+  [500]	2735 responses
+
+
+
+
+[1]  - 51887 done       hey -c 100 -z 10m -m POST -T "application/json" -d
+
+Summary:
+  Total:	605.0405 secs
+  Slowest:	14.5035 secs
+  Fastest:	0.1224 secs
+  Average:	2.7781 secs
+  Requests/sec:	33.7944
+
+  Total data:	647388 bytes
+  Size/request:	31 bytes
+
+Response time histogram:
+  0.122 [1]	|
+  1.560 [10846]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  2.999 [1986]	|■■■■■■■
+  4.437 [258]	|■
+  5.875 [6439]	|■■■■■■■■■■■■■■■■■■■■■■■■
+  7.313 [397]	|■
+  8.751 [171]	|■
+  10.189 [41]	|
+  11.627 [8]	|
+  13.065 [85]	|
+  14.504 [15]	|
+
+
+Latency distribution:
+  10% in 0.6980 secs
+  25% in 0.9346 secs
+  50% in 1.4025 secs
+  75% in 5.3615 secs
+  90% in 5.6143 secs
+  95% in 5.7740 secs
+  99% in 8.1905 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0008 secs, 0.1224 secs, 14.5035 secs
+  DNS-lookup:	0.0003 secs, 0.0000 secs, 0.0565 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0023 secs
+  resp wait:	2.7651 secs, 0.1222 secs, 14.5033 secs
+  resp read:	0.0121 secs, 0.0000 secs, 0.6662 secs
+
+Status code distribution:
+  [204]	1 responses
+  [500]	14234 responses
+  [503]	6012 responses
+
+Error distribution:
+  [200]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/car?currencySymbol=NZD": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+
+
+
+
+
+
+
+{"level":"info","ts":"2023-02-21T14:19:01.855Z","caller":"controller/events.go:33","msg":"Advance location-service.car-rental canary weight 30","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:06.845Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:11.802Z","caller":"controller/events.go:45","msg":"Halt car-service.car-rental advancement success rate 0.00% < 99%","canary":"car-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:11.829Z","caller":"controller/events.go:33","msg":"Advance currency-service.car-rental canary weight 35","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:16.890Z","caller":"controller/events.go:33","msg":"Advance location-service.car-rental canary weight 35","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:21.825Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:26.877Z","caller":"controller/events.go:45","msg":"Rolling back car-service.car-rental failed checks threshold reached 10","canary":"car-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:26.921Z","caller":"controller/events.go:45","msg":"Canary failed! Scaling down car-service.car-rental","canary":"car-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:26.923Z","caller":"controller/events.go:33","msg":"Advance currency-service.car-rental canary weight 40","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:31.836Z","caller":"controller/events.go:33","msg":"Advance location-service.car-rental canary weight 40","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:36.882Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:41.824Z","caller":"controller/events.go:33","msg":"Advance currency-service.car-rental canary weight 45","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:46.881Z","caller":"controller/events.go:33","msg":"Advance location-service.car-rental canary weight 45","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:51.820Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:19:56.903Z","caller":"controller/events.go:33","msg":"Advance currency-service.car-rental canary weight 50","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:01.821Z","caller":"controller/events.go:33","msg":"Advance location-service.car-rental canary weight 50","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:06.846Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:11.789Z","caller":"controller/events.go:33","msg":"Copying currency-service.car-rental template spec to currency-service-primary.car-rental","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:16.822Z","caller":"controller/events.go:33","msg":"Copying location-service.car-rental template spec to location-service-primary.car-rental","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:21.804Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:26.860Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:31.777Z","caller":"controller/events.go:45","msg":"location-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:36.955Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:41.811Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:46.859Z","caller":"controller/events.go:45","msg":"location-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:51.795Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:20:56.900Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:01.787Z","caller":"controller/events.go:33","msg":"Routing all traffic to primary","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:06.839Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:11.788Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:16.849Z","caller":"controller/events.go:33","msg":"Promotion completed! Scaling down location-service.car-rental","canary":"location-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:21.798Z","caller":"controller/events.go:45","msg":"Halt advancement no values found for istio metric request-success-rate probably order-service.car-rental is not receiving traffic: running query failed: no values found","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:26.830Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:36.840Z","caller":"controller/events.go:45","msg":"Rolling back order-service.car-rental failed checks threshold reached 10","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:36.863Z","caller":"controller/events.go:45","msg":"Canary failed! Scaling down order-service.car-rental","canary":"order-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:41.765Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:21:56.809Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:22:11.780Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:22:26.812Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:22:41.765Z","caller":"controller/events.go:45","msg":"currency-service-primary.car-rental not ready: waiting for rollout to finish: 1 old replicas are pending termination","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:22:56.862Z","caller":"controller/events.go:33","msg":"Routing all traffic to primary","canary":"currency-service.car-rental"}
+{"level":"info","ts":"2023-02-21T14:23:11.799Z","caller":"controller/events.go:33","msg":"Promotion completed! Scaling down currency-service.car-rental","canary":"currency-service.car-rental"}

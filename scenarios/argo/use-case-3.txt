@@ -1,0 +1,257 @@
+Timestamp: 21.02.2023 20:40:00 - 21.02.2023 20:45:00
+
+1. Port forward Grafana and open Dashboard
+2. Start simulating Load
+hey -c 100 -z 10m -m POST -T "application/json" -d '{"car_id":"0","location_of_rental_id":2,"location_of_return_id":2,"date_of_booking":"2023-02-20","date_of_rental":"2023-02-20","date_of_return":"2023-02-27","method_of_payment":"AMERICAN_EXPRESS","card_number":"4242424242424242","card_security_code":"424","valid_until":"2024-04-01","first_name":"Max","last_name":"Mustermann","email":"m.mustermann@mm.at","order_status":"CREATED"}' "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/location" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/car?currencySymbol=NZD" &
+hey -c 100 -z 10m "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency" &
+
+3. Trigger Deployment with new image version
+
+helm upgrade -i currency-service argo/app/03-currency-service -n car-rental
+helm upgrade -i car-service argo/app/04-car-service -n car-rental
+helm upgrade -i location-service argo/app/05-location-service -n car-rental
+helm upgrade -i order-service argo/app/07-order-service -n car-rental
+
+4. 30s * 5 steps = 2.5 min for full promotion if succeeds
+
+5. Capture Timeframe and Image of Grafana Dashboard
+20:39:40 - 
+
+
+
+Summary:
+  Total:	600.2353 secs
+  Slowest:	19.0626 secs
+  Fastest:	0.0327 secs
+  Average:	1.2759 secs
+  Requests/sec:	77.6729
+
+  Total data:	770378 bytes
+  Size/request:	16 bytes
+
+Response time histogram:
+  0.033 [1]	|
+  1.936 [38601]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  3.839 [7293]	|■■■■■■■■
+  5.742 [588]	|■
+  7.645 [30]	|
+  9.548 [12]	|
+  11.451 [15]	|
+  13.354 [6]	|
+  15.257 [8]	|
+  17.160 [25]	|
+  19.063 [5]	|
+
+
+Latency distribution:
+  10% in 0.5308 secs
+  25% in 0.7049 secs
+  50% in 0.9849 secs
+  75% in 1.5436 secs
+  90% in 2.5106 secs
+  95% in 3.0684 secs
+  99% in 4.1700 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0003 secs, 0.0327 secs, 19.0626 secs
+  DNS-lookup:	0.0001 secs, 0.0000 secs, 0.0555 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0080 secs
+  resp wait:	1.2591 secs, 0.0317 secs, 19.0296 secs
+  resp read:	0.0162 secs, 0.0000 secs, 1.4136 secs
+
+Status code distribution:
+  [201]	39652 responses
+  [503]	6932 responses
+
+Error distribution:
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49907->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49911->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49929->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49931->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49932->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49933->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49938->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49939->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49942->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49943->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49946->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49947->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49949->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49952->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49955->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49958->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49959->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49960->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49961->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49963->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49964->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49965->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49966->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49967->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49971->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49974->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49975->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49976->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49979->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49980->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49981->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49983->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49986->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49987->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49990->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49991->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49995->20.8.3.28:80: read: connection reset by peer
+  [1]	Post "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/order": read tcp 192.168.178.41:49996->20.8.3.28:80: read: connection reset by peer
+
+
+[1]    68207 done       hey -c 100 -z 10m -m POST -T "application/json" -d
+
+Summary:
+  Total:	600.2073 secs
+  Slowest:	5.5043 secs
+  Fastest:	0.0315 secs
+  Average:	0.6458 secs
+  Requests/sec:	154.8348
+
+  Total data:	180871 bytes
+  Size/request:	1 bytes
+
+Response time histogram:
+  0.032 [1]	|
+  0.579 [58359]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  1.126 [26846]	|■■■■■■■■■■■■■■■■■■
+  1.673 [1976]	|■
+  2.221 [1852]	|■
+  2.768 [1937]	|■
+  3.315 [1309]	|■
+  3.862 [469]	|
+  4.410 [105]	|
+  4.957 [57]	|
+  5.504 [22]	|
+
+
+Latency distribution:
+  10% in 0.2652 secs
+  25% in 0.3645 secs
+  50% in 0.4994 secs
+  75% in 0.6790 secs
+  90% in 0.9883 secs
+  95% in 2.0153 secs
+  99% in 3.1651 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0001 secs, 0.0315 secs, 5.5043 secs
+  DNS-lookup:	0.0000 secs, 0.0000 secs, 0.0492 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0034 secs
+  resp wait:	0.6319 secs, 0.0315 secs, 5.5041 secs
+  resp read:	0.0136 secs, 0.0000 secs, 1.4290 secs
+
+Status code distribution:
+  [200]	90122 responses
+  [204]	2 responses
+  [503]	2809 responses
+
+
+
+
+[2]    68208 done       hey -c 100 -z 10m
+
+Summary:
+  Total:	605.1650 secs
+  Slowest:	17.5533 secs
+  Fastest:	0.7734 secs
+  Average:	5.3839 secs
+  Requests/sec:	18.5007
+
+  Total data:	164314 bytes
+  Size/request:	14 bytes
+
+Response time histogram:
+  0.773 [1]	|
+  2.451 [733]	|■■■■■
+  4.129 [1864]	|■■■■■■■■■■■■
+  5.807 [6114]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  7.485 [1287]	|■■■■■■■■
+  9.163 [507]	|■■■
+  10.841 [527]	|■■■
+  12.519 [68]	|
+  14.197 [52]	|
+  15.875 [34]	|
+  17.553 [9]	|
+
+
+Latency distribution:
+  10% in 2.6547 secs
+  25% in 5.1443 secs
+  50% in 5.4601 secs
+  75% in 5.7401 secs
+  90% in 7.6667 secs
+  95% in 9.5114 secs
+  99% in 11.9833 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0009 secs, 0.7734 secs, 17.5533 secs
+  DNS-lookup:	0.0004 secs, 0.0000 secs, 0.0479 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0023 secs
+  resp wait:	5.3561 secs, 0.7733 secs, 17.0607 secs
+  resp read:	0.0267 secs, 0.0000 secs, 1.3702 secs
+
+Status code distribution:
+  [200]	1115 responses
+  [204]	18 responses
+  [500]	7647 responses
+  [503]	2416 responses
+
+
+
+
+[3]  - 68209 done       hey -c 100 -z 10m
+
+Summary:
+  Total:	611.5492 secs
+  Slowest:	15.9837 secs
+  Fastest:	0.0316 secs
+  Average:	1.0740 secs
+  Requests/sec:	89.4417
+
+  Total data:	402911 bytes
+  Size/request:	7 bytes
+
+Response time histogram:
+  0.032 [1]	|
+  1.627 [45258]	|■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  3.222 [6530]	|■■■■■■
+  4.817 [1779]	|■■
+  6.412 [552]	|
+  8.008 [320]	|
+  9.603 [137]	|
+  11.198 [37]	|
+  12.793 [4]	|
+  14.388 [5]	|
+  15.984 [4]	|
+
+
+Latency distribution:
+  10% in 0.3449 secs
+  25% in 0.4719 secs
+  50% in 0.6643 secs
+  75% in 1.0654 secs
+  90% in 2.5390 secs
+  95% in 3.2537 secs
+  99% in 6.1938 secs
+
+Details (average, fastest, slowest):
+  DNS+dialup:	0.0001 secs, 0.0316 secs, 15.9837 secs
+  DNS-lookup:	0.0000 secs, 0.0000 secs, 0.0343 secs
+  req write:	0.0000 secs, 0.0000 secs, 0.0112 secs
+  resp wait:	1.0565 secs, 0.0315 secs, 15.9776 secs
+  resp read:	0.0173 secs, 0.0000 secs, 1.1517 secs
+
+Status code distribution:
+  [200]	50158 responses
+  [503]	4469 responses
+
+Error distribution:
+  [71]	Get "http://matproject2110838008-car-rental.westeurope.cloudapp.azure.com/api/v1/currency": context deadline exceeded (Client.Timeout exceeded while awaiting headers)

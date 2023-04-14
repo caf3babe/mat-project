@@ -1,0 +1,16 @@
+datasources:
+- name: Prometheus Flagger
+  access: proxy
+  type: prometheus
+  url: http://prometheus-flagger:9090
+  isDefault: true
+- name: Prometheus Argo
+  access: proxy
+  type: prometheus
+  url: http://prometheus-argo:9090
+  isDefault: true
+- name: Prometheus Spinnaker
+  access: proxy
+  type: prometheus
+  url: http://prometheus-spinnaker:9090
+  isDefault: true
