@@ -1,0 +1,10 @@
+spec:
+  http:
+    - name: primary
+      route:
+        - destination:
+            host: frontend
+          weight: 80
+        - destination:
+            host: frontend-canary
+          weight: 20
