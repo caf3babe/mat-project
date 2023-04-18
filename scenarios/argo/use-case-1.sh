@@ -42,7 +42,7 @@ echo "Completed at $(date '+%Y-%m-%d %H:%M:%S')"
 
 
 # ./use-case-1.sh
-# Started at 2023-04-15 20:55:39
+# Started at 2023-04-15 20:53:39
 # Waiting 15s for metrics to be available
 # Starting upgrade of frontend
 # 2023-04-15 20:55:54

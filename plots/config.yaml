@@ -1,0 +1,97 @@
+usecases:
+  - name: Frontend deployment
+    plots:
+    - name: Memory usage
+      filename: images/frontend_mem_consumption.png
+      timeseries:
+      - file: timeseries/flagger memory usage-data-2023-04-18 18_32_32.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo memory usage-data-2023-04-18 19_04_02.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker memory usage-data-2023-04-18 20_50_17.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
+    - name: CPU usage
+      filename: images/frontend_cpu_consumption.png
+      timeseries:
+      - file: timeseries/flagger cpu usage-data-2023-04-18 20_56_51.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo cpu usage-data-2023-04-18 20_56_18.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker cpu usage-data-2023-04-18 20_55_25.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
+  - name: API Gateway deployment
+    plots:
+    - name: Memory usage
+      filename: images/api_gateway_mem_consumption.png
+      timeseries:
+      - file: timeseries/flagger memory usage-data-2023-04-18 22_40_36.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo memory usage-data-2023-04-18 22_47_41.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker memory usage-data-2023-04-18 22_52_41.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
+    - name: CPU usage
+      filename: images/api_gateway_cpu_consumption.png
+      timeseries: 
+      - file: timeseries/flagger cpu usage-data-2023-04-18 22_40_48.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo cpu usage-data-2023-04-18 22_47_50.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker cpu usage-data-2023-04-18 22_52_50.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
+  - name: Microservices deployment
+    plots:
+    - name: Memory usage
+      filename: images/microservices_mem_consumption.png
+      timeseries:
+      - file: timeseries/flagger memory usage-data-2023-04-18 22_44_47.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo memory usage-data-2023-04-18 22_50_12.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker memory usage-data-2023-04-18 22_54_22.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
+    - name: CPU usage
+      filename: images/microservices_cpu_consumption.png
+      timeseries: 
+      - file: timeseries/flagger cpu usage-data-2023-04-18 22_44_57.csv
+        valueColumnName: flagger
+        label: Flagger
+        color: blue
+      - file: timeseries/argo cpu usage-data-2023-04-18 22_50_25.csv
+        valueColumnName: argo-rollouts
+        label: Argo Rollouts
+        color: orange
+      - file: timeseries/spinnaker cpu usage-data-2023-04-18 22_54_28.csv
+        valueColumnName: spinnaker
+        label: Spinnaker
+        color: green
